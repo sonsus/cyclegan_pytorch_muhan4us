@@ -39,7 +39,7 @@ def default_loader(path):
 '''
 #rewrite functions for npy
 def is_npy_file(filename):
-    return any(filename.endswith('.npy'))
+    return filename.endswith('.npy')
 
 def make_dataset(dir):
     npys=[]
@@ -49,7 +49,7 @@ def make_dataset(dir):
         for fname in fnames:
             if is_npy_file(fname):
                 path = os.path.join(root, fname)
-                images.append(path)
+                npys.append(path)
 
     return npys
 
@@ -61,24 +61,24 @@ class ImageFolder(data.Dataset):
 
     def __init__(self, root, transform=None, return_paths=False,
                  loader=default_loader):
-        imgs = make_dataset(root)
-        if len(imgs) == 0:
+        npys = make_dataset(root)
+        if len(npys) == 0:
             raise(RuntimeError("found 0 npys in {}".format(root)))
             #raise(RuntimeError("Found 0 images in: " + root + "\n"
             #                   "Supported image extensions are: " +
             #                   ",".join(IMG_EXTENSIONS)))
 
         self.root = root
-        self.imgs = imgs #?
+        self.npys = npys 
         self.transform = transform
         self.return_paths = return_paths
         self.loader = loader
 
     def __getitem__(self, index):
-        path = self.npys[index] #?
+        path = self.npys[index] 
         npy = self.loader(path)
         if self.transform is not None:
-            npy = self.transform(img)
+            npy = self.transform(npy)
         if self.return_paths:
             return npy, path
         else:

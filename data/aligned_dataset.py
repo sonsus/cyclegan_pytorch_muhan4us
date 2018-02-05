@@ -1,3 +1,4 @@
+import numpy as np
 import os.path
 import random
 import torchvision.transforms as transforms
@@ -27,11 +28,14 @@ class AlignedDataset(BaseDataset):
     def __getitem__(self, index):
         AB_path = self.AB_paths[index]
         tmp = np.load(AB_path)
-        v_tmp=tmp[:,:,:,0]
-        o_tmp=tmp[:,:,:,1]
+        v_tmp=tmp[:,:,0]
+        o_tmp=tmp[:,:,1]
         tmp_concat = np.concatenate((v_tmp, o_tmp), 1) #now (1024,2048)
-        AB = torch.from_numpy(tmp_concat) 
-
+        tmp_concat = tmp_concat[None,:,:]
+        #print(tmp_concat.shape)
+        AB = torch.FloatTensor(tmp_concat) 
+        #print(AB.size())
+        
         w_total = AB.size(2)  
         w = int(w_total / 2)
         h = AB.size(1)  
@@ -58,15 +62,6 @@ class AlignedDataset(BaseDataset):
        
         return {'A': A, 'B': B,
                 'A_paths': AB_path, 'B_paths': AB_path}
-''' we are actually using grayscale vectors
-        if input_nc == 1:  # RGB to gray
-            tmp = A[0, ...] * 0.299 + A[1, ...] * 0.587 + A[2, ...] * 0.114
-            A = tmp.unsqueeze(0)
-
-        if output_nc == 1:  # RGB to gray
-            tmp = B[0, ...] * 0.299 + B[1, ...] * 0.587 + B[2, ...] * 0.114
-            B = tmp.unsqueeze(0)
-'''    
 
     def __len__(self):
         return len(self.AB_paths)
