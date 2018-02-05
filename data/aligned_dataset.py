@@ -13,25 +13,28 @@ class AlignedDataset(BaseDataset):
         self.root = opt.dataroot
         self.dir_AB = os.path.join(opt.dataroot, opt.phase)
 
-        self.AB_paths = sorted(make_dataset(self.dir_AB))
+        self.AB_paths = sorted(make_dataset(self.dir_AB)) # 
 
-        assert(opt.resize_or_crop == 'resize_and_crop')
+        #assert(opt.resize_or_crop == 'resize_and_crop')
 
-        transform_list = [transforms.ToTensor(),
-                          transforms.Normalize((0.5, 0.5, 0.5),
-                                               (0.5, 0.5, 0.5))]
+        transform_list = [transforms.ToTensor(),] # ToTensor fails with numpy.ndarray ?
+                          #transforms.Normalize((0.5, 0.5, 0.5),
+                          #                     (0.5, 0.5, 0.5))]
+                          # normalizing doesnt fits into our problem
 
         self.transform = transforms.Compose(transform_list)
 
     def __getitem__(self, index):
         AB_path = self.AB_paths[index]
-        AB = Image.open(AB_path).convert('RGB')
-        AB = AB.resize((self.opt.loadSize * 2, self.opt.loadSize), Image.BICUBIC)
-        AB = self.transform(AB)
+        tmp = np.load(AB_path)
+        v_tmp=tmp[:,:,:,0]
+        o_tmp=tmp[:,:,:,1]
+        tmp_concat = np.concatenate((v_tmp, o_tmp), 1) #now (1024,2048)
+        AB = torch.from_numpy(tmp_concat) 
 
-        w_total = AB.size(2)
+        w_total = AB.size(2)  
         w = int(w_total / 2)
-        h = AB.size(1)
+        h = AB.size(1)  
         w_offset = random.randint(0, max(0, w - self.opt.fineSize - 1))
         h_offset = random.randint(0, max(0, h - self.opt.fineSize - 1))
 
@@ -52,7 +55,10 @@ class AlignedDataset(BaseDataset):
             idx = torch.LongTensor(idx)
             A = A.index_select(2, idx)
             B = B.index_select(2, idx)
-
+       
+        return {'A': A, 'B': B,
+                'A_paths': AB_path, 'B_paths': AB_path}
+''' we are actually using grayscale vectors
         if input_nc == 1:  # RGB to gray
             tmp = A[0, ...] * 0.299 + A[1, ...] * 0.587 + A[2, ...] * 0.114
             A = tmp.unsqueeze(0)
@@ -60,9 +66,7 @@ class AlignedDataset(BaseDataset):
         if output_nc == 1:  # RGB to gray
             tmp = B[0, ...] * 0.299 + B[1, ...] * 0.587 + B[2, ...] * 0.114
             B = tmp.unsqueeze(0)
-    
-        return {'A': A, 'B': B,
-                'A_paths': AB_path, 'B_paths': AB_path}
+'''    
 
     def __len__(self):
         return len(self.AB_paths)

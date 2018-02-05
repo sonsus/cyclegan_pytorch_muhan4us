@@ -1,0 +1,19 @@
+@ pytorch-Cyclegan... /data/
+
+1. aligned_dataset.py
+ : __getitem__ 
+
+   - reshaped our data into 1024,2048 and fed it into
+   - rgb removed, rgb to gray also removed
+2. image_folder.py
+ : functions for img extensions --> npy extensions
+ : class ImageFolder img-->npy, imgs-->npys 
+
+
+
+ @ /options
+ 1. base_option.py
+   -fineSize default: 512--> 1024
+   -loadSize default: 286
+   -in/output nc: 3--> 1
+   -dataroot default: (None)--> "./datasets/bolbbalgan4"
