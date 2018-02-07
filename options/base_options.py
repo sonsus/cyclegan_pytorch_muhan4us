@@ -39,7 +39,7 @@ class BaseOptions():
         self.parser.add_argument('--no_flip', action='store_true', help='if specified, do not flip the images for data augmentation')
         self.parser.add_argument('--init_type', type=str, default='xavier', help='network initialization [normal|xavier|kaiming|orthogonal]')
         args1=argparse.ArgumentParser(description="").parse_args()
-        self.parser.add_argument('--name', type=str, default='G_{g}_D_{d}_{data}'.format(g=args1.which_model_netG, d=args1.which_model_netD, data=args1.dataroot.split('/')[-1]), 
+        self.parser.add_argument('--name', type=str, default='specify_expname', 
                                 help='name of the experiment. It decides where to store samples and models')
 
         self.initialized = True
