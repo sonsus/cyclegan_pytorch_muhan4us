@@ -38,7 +38,7 @@ class GetData(object):
         if self._verbose:
             print(text)
 
-    @staticmethod
+    @staticmethod # function wrapper here does what?
     def _get_options(r):
         soup = BeautifulSoup(r.text, 'lxml')
         options = [h.text for h in soup.find_all('a', href=True)

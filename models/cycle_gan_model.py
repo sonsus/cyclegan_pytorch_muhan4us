@@ -207,6 +207,12 @@ class CycleGANModel(BaseModel):
         return ret_errors
 
     def get_current_visuals(self):
+        # save specgram before it's converted into uint8
+        keys = ('input_A', 'fake_B', 'rec_A', 'input_B', 'fake_A', 'rec_B')
+        np_result_dict =  dict( zip (keys, map(lambda x: eval(x), keys) ) ) # that is {"input_A":input_A,"fake_B":fake_B...so on}
+        for key in keys:
+            util.write_specgram_img_npy(np_result_dict[key], opt.phase, opt.epoch_count, key )        
+        
         real_A = util.tensor2im(self.input_A)
         fake_B = util.tensor2im(self.fake_B)
         rec_A = util.tensor2im(self.rec_A)
@@ -215,6 +221,7 @@ class CycleGANModel(BaseModel):
         rec_B = util.tensor2im(self.rec_B)
         ret_visuals = OrderedDict([('real_A', real_A), ('fake_B', fake_B), ('rec_A', rec_A),
                                    ('real_B', real_B), ('fake_A', fake_A), ('rec_B', rec_B)])
+
         if self.opt.isTrain and self.opt.identity > 0.0:
             ret_visuals['idt_A'] = util.tensor2im(self.idt_A)
             ret_visuals['idt_B'] = util.tensor2im(self.idt_B)

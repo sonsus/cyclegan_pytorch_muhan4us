@@ -6,16 +6,21 @@ import inspect, re
 import numpy as np
 import os
 import collections
+#import preprocess as pr # locate preprocess.py into ./util/
+import numpy as np
+import matplotlib.pyplot as plt 
+plt.switch_backend('agg') #for running matplotlib remotely (no graphic device available)
 
 # Converts a Tensor into a Numpy array
 # |imtype|: the desired type of the converted numpy array
+
+# lesioned out from the model. not used for my code.
 def tensor2im(image_tensor, imtype=np.uint8):
     image_numpy = image_tensor[0].cpu().float().numpy()
     if image_numpy.shape[0] == 1:
         image_numpy = np.tile(image_numpy, (3, 1, 1))
     image_numpy = (np.transpose(image_numpy, (1, 2, 0)) + 1) / 2.0 * 255.0
     return image_numpy.astype(imtype)
-
 
 def diagnose_network(net, name='network'):
     mean = 0.0
@@ -71,3 +76,13 @@ def mkdirs(paths):
 def mkdir(path):
     if not os.path.exists(path):
         os.makedirs(path)
+
+# saves specgram img and nparray (npy for reconstruction)
+def write_specgram_img_npy(specgram, optphase, optepoch, real_or_fake_key, imgtype=".png"): 
+    filename=optphase+optepoch+real_or_fake_key
+    np.save(filename+".npy", specgram)
+    fig, ax = plt.subplots(nrows=1,ncols=1)
+    cax = ax.matshow(np.transpose(specgram), interpolation='nearest', aspect='auto', cmap=plt.cm.afmhot, origin='lower')
+    fig.colorbar(cax)
+    plt.title('upper: generated_ensemble\n middle:original_ensemble\nlower: vocal_only')
+    plt.savefig(filename+imgtype, dpi="figure", bbox_inches="tight")
