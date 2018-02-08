@@ -8,7 +8,7 @@ mv checkpoints ~/datatmp
 
 git add .
 git status
-git commit -m "$DATE $USER  auto commit excluding checkpoints and data"
+git commit -m "$USER $DATE || auto commit excluding checkpoints and data"
 git pull origin master
 git push origin master
 
