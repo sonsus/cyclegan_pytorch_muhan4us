@@ -21,7 +21,13 @@
 
 @ /utils
 1. preprocess.py --> cant I just move write specgram? does it have too much dependency? V
-	- done: moved the function and its dependency packages added on top
+	- done: moved the function and its dependency packages added on top (matplotlib, agg, numpy)
+
 2. lesion out visdom server and dominate? fucking annoying and might cause some bottleneck during training
+	- asked to Seung
+
 3. events file writer for pytorch ---> nashory ?
 
+
+
+git branches: forked repo, allowing push to my fork how?
