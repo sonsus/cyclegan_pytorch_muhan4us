@@ -206,15 +206,15 @@ class CycleGANModel(BaseModel):
             ret_errors['idt_B'] = self.loss_idt_B
         return ret_errors
 
-    def get_current_visuals(self):
+    def get_current_visuals(self, _step): # _step from train.py
         # save specgram before it's converted into uint8
-        targetdir=self.opt.checkpoints_dir + "/" + self.opt.name + "/" 
+        targetdir=self.opt.checkpoints_dir + "/" + self.opt.name + "/" +"web/"
 
         keys = ('input_A', 'fake_B', 'rec_A', 'input_B', 'fake_A', 'rec_B')
         np_result_dict =  dict( zip (keys, map(lambda x, self=self: eval("self."+x), keys) ) ) # that is {"input_A":input_A,"fake_B":fake_B...so on}
         for key in keys:
             reshaped_img=np.reshape(np_result_dict[key], (1024,1024))
-            util.write_specgram_img_npy(reshaped_img, targetdir, self.opt.phase, self.opt.epoch_count, key )        
+            util.write_specgram_img_npy(reshaped_img, targetdir, self.opt.phase, self.opt.epoch_count, _step, key)        
             #file path/name = targetdir/phase_epoch_img.png(default) 
         real_A = util.tensor2im(self.input_A)
         fake_B = util.tensor2im(self.fake_B)
