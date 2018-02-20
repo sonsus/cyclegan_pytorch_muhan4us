@@ -213,7 +213,7 @@ class CycleGANModel(BaseModel):
         keys = ('input_A', 'fake_B', 'rec_A', 'input_B', 'fake_A', 'rec_B')
         np_result_dict =  dict( zip (keys, map(lambda x, self=self: eval("self."+x), keys) ) ) # that is {"input_A":input_A,"fake_B":fake_B...so on}
         for key in keys:
-            reshaped_img=np.reshape(np_result_dict[key], (1024,1024))
+            reshaped_img=np.reshape(np_result_dict[key], (self.fineSize,self.fineSize))
             util.write_specgram_img_npy(reshaped_img, targetdir, self.opt.phase, self.opt.epoch_count, _step, key)        
             #file path/name = targetdir/phase_epoch_img.png(default) 
         real_A = util.tensor2im(self.input_A)

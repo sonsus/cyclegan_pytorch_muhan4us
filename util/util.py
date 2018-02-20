@@ -79,7 +79,7 @@ def mkdir(path):
 
 # saves specgram img and nparray (npy for reconstruction)
 def write_specgram_img_npy(specgram, targetdir, optphase, optepoch, step, real_or_fake_key, ext=".png"): 
-    filename="{dir}_{phase}_{epoch}_{step}_{key}".format(dir=targetdir, phase=optphase, epoch=optepoch, step= step, key=real_or_fake_key)
+    filename="{dir}/{phase}_{epoch}_{step}_{key}".format(dir=targetdir, phase=optphase, epoch=optepoch, step= step, key=real_or_fake_key)
     np.save(filename+".npy", specgram)
     fig, ax = plt.subplots(nrows=1,ncols=1)
     cax = ax.matshow(np.transpose(specgram), interpolation='nearest', aspect='auto', cmap=plt.cm.afmhot, origin='lower')

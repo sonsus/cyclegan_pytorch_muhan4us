@@ -2,14 +2,12 @@
 
 1. aligned_dataset.py
  : __getitem__ 
-
    - reshaped our data into 1024,2048 and fed it into
    - rgb removed, rgb to gray also removed
+
 2. image_folder.py
  : functions for img extensions --> npy extensions
  : class ImageFolder img-->npy, imgs-->npys 
-
-
 
 @ /options
 1. base_option.py
@@ -28,6 +26,6 @@
 
 3. events file writer for pytorch ---> nashory ?
 
-
-
 git branches: forked repo, allowing push to my fork how?
+
+
