@@ -214,6 +214,17 @@ class CycleGANModel(BaseModel):
         np_result_dict =  dict( zip (keys, map(lambda x, self=self: eval("self."+x), keys) ) ) # that is {"input_A":input_A,"fake_B":fake_B...so on}
         for key in keys:
             reshaped_img=np.reshape(np_result_dict[key], (self.fineSize,self.fineSize))
+            # rescale the picture to the input specgram
+            normfactor=1.0 # in case key is neither fakeAorB, it gets no effect on specgram 
+            if key == 'fake_B': 
+                refmax=max(np.absolute(np_result_dict['input_A'].flatten("C")))
+                samplemax=max(np.absolute(np_result_dict[key].flatten("C")))
+                normfactor = refmax/samplemax
+            elif key == 'fake_A': 
+                refmax=max(np.absolute(np_result_dict['input_B'].flatten("C")))
+                samplemax=max(np.absolute(np_result_dict[key].flatten("C")))
+                normfactor = refmax/samplemax
+            rescaled_img= reshaped_img * normfactor
             util.write_specgram_img_npy(reshaped_img, targetdir, self.opt.phase, self.opt.epoch_count, _step, key)        
             #file path/name = targetdir/phase_epoch_img.png(default) 
         real_A = util.tensor2im(self.input_A)
